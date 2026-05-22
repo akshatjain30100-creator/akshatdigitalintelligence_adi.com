@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADI — Akshat Digital Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f3ee;
+    --cream: #ede9e0;
+    --gold: #d4a843;
+    --gold-light: #f0c96b;
+    --blue: #1a2fff;
+    --blue-dark: #0d1acc;
+    --muted: #6b6860;
+    --border: rgba(10,10,15,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--blue);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, background 0.2s;
+    mix-blend-mode: multiply;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--blue);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, border-color 0.2s;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: rgba(245,243,238,0.85);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--blue); }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+    height: 1.5px; background: var(--blue);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .nav-cta {
+    background: var(--ink);
+    color: var(--paper) !important;
+    padding: 0.6rem 1.4rem;
+    border-radius: 2px;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--blue) !important; transform: translateY(-1px); }
+  .nav-cta::after { display: none !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(26,47,255,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(212,168,67,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 24px; height: 1.5px; background: var(--blue);
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.2rem, 5vw, 5.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 1.8rem;
+    opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-title .accent { color: var(--blue); display: block; }
+  .hero-title .gold { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 440px;
+    line-height: 1.75;
+    margin-bottom: 2.8rem;
+    opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; align-items: center;
+    opacity: 0; animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    padding: 0.9rem 2.2rem;
+    border-radius: 2px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(26,47,255,0.25);
+  }
+  .btn-primary:hover {
+    background: var(--blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(26,47,255,0.35);
+  }
+
+  .btn-ghost {
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: gap 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--blue); gap: 0.8rem; }
+  .btn-ghost .arrow { font-size: 1.1rem; }
+
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; animation: fadeIn 1s 0.7s forwards;
+  }
+
+  .hero-visual {
+    width: 420px; height: 420px;
+    position: relative;
+  }
+
+  .visual-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(26,47,255,0.2);
+    animation: spin linear infinite;
+  }
+  .ring-1 { inset: 0; animation-duration: 30s; }
+  .ring-2 { inset: 30px; animation-duration: 22s; animation-direction: reverse; border-color: rgba(212,168,67,0.2); }
+  .ring-3 { inset: 70px; animation-duration: 16s; }
+
+  .ring-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--blue);
+    position: absolute; top: -4px; left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 12px var(--blue);
+  }
+  .ring-2 .ring-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+
+  .visual-center {
+    position: absolute; inset: 120px;
+    background: var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(10,10,15,0.25);
+  }
+  .vc-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .vc-sub {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .hero-stats {
+    position: absolute; bottom: 3rem; left: 4rem; right: 4rem;
+    display: flex; gap: 3rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    opacity: 0; animation: fadeUp 0.7s 1s forwards;
+  }
+  .stat-item { 
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+  }}
+  .stat-num .plus { color: var(--blue); }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-section {
+    background: var(--ink);
+    padding: 1.2rem 0;
+    overflow: hidden;
+    border-top: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+  }
+  .marquee-track {
+    display: flex; gap: 4rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .marquee-item {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .marquee-item .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+
+  .highlight-text{
+    color:gold;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  /* ── SERVICES ── */
+  .services {
+    padding: 8rem 4rem;
+    position: relative;
+  }
+
+  .section-label {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 1.2rem;
+  }
+  .section-label::before {
+    content: ''; width: 20px; height: 1.5px; background: var(--blue);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 4vw, 3.8rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+  }
+
+  .services-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: end;
+    margin-bottom: 5rem;
+  }
+
+  .services-intro {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 380px;
+    align-self: end;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+  }
+
+  .service-card {
+    background: var(--paper);
+    padding: 2.8rem 2.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover { background: var(--cream); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .service-icon {
+    width: 44px; height: 44px;
+    background: var(--ink);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    transition: background 0.3s;
+  }
+  .service-card:hover .service-icon { background: var(--blue); }
+
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.8rem;
+  }
+
+  .service-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── PROCESS ── */
+  .process {
+    background: var(--ink);
+    padding: 8rem 4rem;
+    color: #fff;
+  }
+
+  .process .section-label { color: var(--gold); }
+  .process .section-label::before { background: var(--gold); }
+  .process .section-title { color: #fff; }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 5rem;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 2rem; left: 12.5%; right: 12.5%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0.15) 80%, transparent);
+  }
+
+  .process-step {
+    padding: 0 2rem;
+    text-align: center;
+  }
+
+  .step-num {
+    width: 4rem; height: 4rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 2rem;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--gold);
+    background: var(--ink);
+    position: relative;
+    z-index: 1;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .process-step:hover .step-num {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+
+  .step-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+  }
+
+  /* ── WHY US ── */
+  .why {
+    padding: 8rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: center;
+  }
+
+  .why-visual {
+    position: relative;
+    height: 520px;
+  }
+
+  .why-box {
+    position: absolute;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    padding: 2rem 2.4rem;
+    border-radius: 2px;
+  }
+  .why-box-1 { top: 0; left: 0; right: 60px; }
+  .why-box-2 { top: 160px; left: 60px; right: 0; background: var(--blue); color: #fff; border-color: var(--blue); }
+  .why-box-3 { bottom: 0; left: 0; right: 80px; }
+
+  .why-box-label {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem;
+  }
+  .why-box-2 .why-box-label { color: rgba(255,255,255,0.6); }
+  .why-box-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 2.8rem;
+    letter-spacing: -0.04em; line-height: 1;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .why-box-2 .why-box-num { color: #fff; }
+  .why-box-text { font-size: 0.88rem; color: var(--muted); }
+  .why-box-2 .why-box-text { color: rgba(255,255,255,0.7); }
+
+  .why-content .section-title { margin-bottom: 1.8rem; }
+
+  .why-points { list-style: none; display: flex; flex-direction: column; gap: 1.4rem; }
+  .why-point {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+  }
+  .wp-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: rgba(26,47,255,0.08);
+    border: 1px solid rgba(26,47,255,0.15);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; margin-top: 2px;
+  }
+  .wp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+  .wp-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    background: var(--cream);
+    padding: 8rem 4rem;
+    overflow: hidden;
+  }
+
+  .testimonials-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 4rem;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(10,10,15,0.08);
+  }
+
+  .testimonial-card {
+    background: var(--paper);
+    padding: 2.5rem;
+  }
+
+  .t-stars { color: var(--gold); font-size: 0.9rem; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+
+  .t-quote {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink);
+    margin-bottom: 2rem;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .t-quote::before { content: '"'; font-size: 2rem; color: var(--blue); line-height: 0; vertical-align: -0.4rem; margin-right: 0.2rem; font-style: normal; font-family: 'Syne', sans-serif; font-weight: 800; }
+
+  .t-author { display: flex; align-items: center; gap: 1rem; }
+  .t-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.9rem; color: #fff;
+    flex-shrink: 0;
+  }
+  .t-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .t-role { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ── CONTACT ── */
+  .contact {
+    padding: 8rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: start;
+  }
+
+  .contact-info { 
+  .contact-info .section-title { margin-bottom: 1.2rem; }
+
+  .contact-desc {
+    font-size: 1rem; color: var(--muted); line-height: 1.75; margin-bottom: 3rem;
+  }
+
+  .contact-details { display: flex; flex-direction: column; gap: 1.2rem; }
+  .contact-detail {
+    display: flex; gap: 1rem; align-items: flex-start;
+  }}
+  .cd-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: var(--ink);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #fff;
+  }
+  .cd-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
+  .cd-value { font-size: 0.95rem; font-weight: 500; }
+
+  .contact-form { 
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+  .form-group label {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+    font-weight: 500; color: var(--muted);
+  }}
+  .form-group input, .form-group textarea, .form-group select {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    padding: 0.85rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    transition: border-color 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--blue);
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+
+  .btn-submit {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex; align-items: center; gap: 0.6rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-submit:hover { background: var(--blue); transform: translateY(-1px); }
+
+  .flex-container{
+    display:flex;
+    gap: 2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.6);
+    padding: 4rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand .nav-logo { color: #fff; display: block; margin-bottom: 1rem; font-size: 1.8rem; }
+  .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 280px; }
+
+  .footer-col-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 1.2rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .footer-col a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem;
+  }
+  .footer-bottom a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  .footer-bottom a:hover { color: var(--gold); }
+
+  .social-links { display: flex; gap: 1rem; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,168,67,0.1); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* scroll reveal */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { padding: 7rem 2rem 6rem; grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-stats { left: 2rem; right: 2rem; }
+    .services { padding: 6rem 2rem; }
+    .services-header { grid-template-columns: 1fr; gap: 2rem; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .process { padding: 6rem 2rem; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    .process-steps::before { display: none; }
+    .why { padding: 6rem 2rem; grid-template-columns: 1fr; gap: 4rem; }
+    .why-visual { height: 320px; }
+    .testimonials { padding: 6rem 2rem; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .contact { padding: 6rem 2rem; grid-template-columns: 1fr; gap: 4rem; }
+    footer { padding: 3rem 2rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">ADI<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#testimonials">Results</a></li>
+    <li><a href="#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">Digital Marketing Agency</div>
+    <h1 class="hero-title">
+      Akshat
+      <span class="accent">Digital</span>
+      Intelligence
+    </h1>
+    <p class="hero-sub">We transform brands into digital powerhouses — through data-driven strategy, performance marketing, and intelligent growth systems.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start Your Growth →</a>
+      <a href="#services" class="btn-ghost">Our Services <span class="arrow">→</span></a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="visual-ring ring-1"><div class="ring-dot"></div></div>
+      <div class="visual-ring ring-2"><div class="ring-dot"></div></div>
+      <div class="visual-ring ring-3"><div class="ring-dot"></div></div>
+      <div class="visual-center">
+        <div class="vc-text"><img src="InShot_20260418_180815588.png" width="600" height="350" align-justify alt="ADI"></div>
+        <div class="vc-sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">200<span class="plus">+</span></div>
+      <div class="stat-label">Brands Scaled</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">8x</div>
+      <div class="stat-label">Avg. ROAS</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">₹50<span class="plus">Cr+</span></div>
+      <div class="stat-label">Revenue Generated</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98<span class="plus">%</span></div>
+      <div class="stat-label">Client Retention</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="dot"></span>SEO Dominance</div>
+    <div class="marquee-item"><span class="dot"></span>Performance Ads</div>
+    <div class="marquee-item"><span class="dot"></span>Brand Strategy</div>
+    <div class="marquee-item"><span class="dot"></span>Social Media</div>
+    <div class="marquee-item"><span class="dot"></span>Content Marketing</div>
+    <div class="marquee-item"><span class="dot"></span>Email Automation</div>
+    <div class="marquee-item"><span class="dot"></span>Growth Hacking</div>
+    <div class="marquee-item"><span class="dot"></span>Data Analytics</div>
+    <div class="marquee-item"><span class="dot"></span>Web Development</div>
+    <div class="marquee-item"><span class="dot"></span>SEO Dominance</div>
+    <div class="marquee-item"><span class="dot"></span>Performance Ads</div>
+    <div class="marquee-item"><span class="dot"></span>Brand Strategy</div>
+    <div class="marquee-item"><span class="dot"></span>Social Media</div>
+    <div class="marquee-item"><span class="dot"></span>Content Marketing</div>
+    <div class="marquee-item"><span class="dot"></span>Email Automation</div>
+    <div class="marquee-item"><span class="dot"></span>Growth Hacking</div>
+    <div class="marquee-item"><span class="dot"></span>Data Analytics</div>
+    <div class="marquee-item"><span class="dot"></span>Web Development</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-header reveal">
+    <div>
+      <div class="section-label">What We Do</div>
+      <h2 class="section-title">Intelligent Services<br>for Modern Brands</h2>
+    </div>
+    <p class="services-intro">Every service we offer is engineered around one goal: measurable, scalable growth for your business in the digital landscape.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <div class="service-icon">🎯</div>
+      <div class="service-name">Performance Marketing</div>
+      <p class="service-desc">ROI-focused ad campaigns across Google, Meta, YouTube & more. We optimize every rupee for maximum returns and qualified leads.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">02</div>
+      <div class="service-icon">🔍</div>
+      <div class="service-name">SEO & Content Strategy</div>
+      <p class="service-desc">Dominate search rankings with intelligent keyword strategies, technical SEO, and content that converts visitors to customers.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">03</div>
+      <div class="service-icon">📱</div>
+      <div class="service-name">Social Media Marketing</div>
+      <p class="service-desc">Build engaged communities, grow your following, and turn social audiences into loyal brand advocates and buyers.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04</div>
+      <div class="service-icon">✉️</div>
+      <div class="service-name">Email & Automation</div>
+      <p class="service-desc">Revenue-generating email sequences, drip campaigns, and marketing automation that nurture leads 24/7 on autopilot.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">05</div>
+      <div class="service-icon">🌐</div>
+      <div class="service-name">Web Design & CRO</div>
+      <p class="service-desc">Conversion-optimised websites and landing pages that don't just look great — they turn visitors into paying customers.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">06</div>
+      <div class="service-icon">📊</div>
+      <div class="service-name">Brand & Analytics</div>
+      <p class="service-desc">Data intelligence dashboards, brand identity systems, and strategic positioning to future-proof your market presence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="reveal">
+    <div class="section-label">How We Work</div>
+    <h2 class="section-title">Our 4-Step<br>Intelligence Framework</h2>
+  </div>
+
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Discovery & Audit</div>
+      <p class="step-desc">Deep-dive into your brand, competitors, audience, and current digital footprint to uncover hidden opportunities.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title">Strategy Design</div>
+      <p class="step-desc">Build a bespoke, data-backed growth roadmap with clear KPIs, channel mix, and 90-day milestones.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title">Execute & Scale</div>
+      <p class="step-desc">Launch campaigns, content, and systems with precision. Real-time optimization and A/B testing at every step.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">04</div>
+      <div class="step-title">Report & Grow</div>
+      <p class="step-desc">Transparent monthly reports with actionable insights. Continuous iteration to compound your growth over time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why" id="why">
+  <div class="why-visual reveal">
+    <div class="why-box why-box-1">
+      <div class="why-box-label">Client Revenue Growth</div>
+      <div class="why-box-num">312%</div>
+      <div class="why-box-text">Average revenue increase in Year 1</div>
+    </div>
+    <div class="why-box why-box-2">
+      <div class="why-box-label">Ad Spend Managed</div>
+      <div class="why-box-num">₹25M+</div>
+      <div class="why-box-text">Profitably deployed across all channels</div>
+    </div>
+    <div class="why-box why-box-3">
+      <div class="why-box-label">Industries Served</div>
+      <div class="why-box-num">40+</div>
+      <div class="why-box-text">From D2C to B2B, FinTech to Healthcare</div>
+    </div>
+  </div>
+
+  <div class="why-content reveal">
+    <div class="section-label">Why ADI</div>
+    <h2 class="section-title">Intelligence-Led.<br>Results-Obsessed.</h2>
+    <ul class="why-points">
+      <li class="why-point">
+        <div class="wp-icon">🧠</div>
+        <div>
+          <div class="wp-title">AI-Augmented Strategy</div>
+          <p class="wp-desc">We combine human creativity with AI-powered analytics to make smarter decisions faster than traditional agencies.</p>
+        </div>
+      </li>
+      <li class="why-point">
+        <div class="wp-icon">📈</div>
+        <div>
+          <div class="wp-title">Guaranteed Accountability</div>
+          <p class="wp-desc">No vanity metrics. We track revenue, leads, and real business outcomes — and report transparently every month.</p>
+        </div>
+      </li>
+      <li class="why-point">
+        <div class="wp-icon">🤝</div>
+        <div>
+          <div class="wp-title">Dedicated Growth Team</div>
+          <p class="wp-desc">You get a senior strategist, specialist, and account manager — not a junior team running templates.</p>
+        </div>
+      </li>
+      <li class="why-point">
+        <div class="wp-icon">⚡</div>
+        <div>
+          <div class="wp-title">Agile & Fast Execution</div>
+          <p class="wp-desc">48-hour campaign launches, weekly optimizations, and rapid pivots when market conditions shift.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-header reveal">
+    <div>
+      <div class="section-label">Client Results</div>
+      <h2 class="section-title">Real Brands,<br>Real Growth</h2>
+    </div>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">ADI completely transformed our digital presence. Within 6 months, our organic traffic tripled and our cost per lead dropped by 60%. They're not just an agency — they're true growth partners.</p>
+      <div class="t-author">
+        <div class="t-avatar">RK</div>
+        <div>
+          <div class="t-name">Rohit Kapoor</div>
+          <div class="t-role">CEO, TechVenture India</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">The team at ADI delivered an 8x ROAS on our Meta campaigns in just 90 days. Their data-first approach and constant optimisation is unlike anything we've experienced before.</p>
+      <div class="t-author">
+        <div class="t-avatar">PS</div>
+        <div>
+          <div class="t-name">Priya Sharma</div>
+          <div class="t-role">Founder, Bloom D2C</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-quote">What sets ADI apart is their intelligence — every recommendation is backed by data. Our brand awareness grew 250% and we ranked #1 for our core keywords in under 4 months.</p>
+      <div class="t-author">
+        <div class="t-avatar">AM</div>
+        <div>
+          <div class="t-name">Arjun Mehta</div>
+          <div class="t-role">CMO, FinEdge Solutions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-info reveal">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's Build Something<br>Extraordinary</h2>
+    <p class="contact-desc">Ready to accelerate your digital growth? Tell us about your business and we'll craft a custom strategy to achieve your goals.</p>
+
+    <div class="contact-details">
+      <div class="contact-detail">
+        <div class="cd-icon">📍</div>
+        <div>
+          <div class="cd-label">Office</div>
+          <div class="cd-value">Ajmer, Rajasthan, India</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">✉️</div>
+        <div>
+          <div class="cd-label">Email</div>
+          <div class="cd-value">akshatjain30100@gmail.com</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">📞</div>
+        <div>
+          <div class="cd-label">Phone</div>
+          <div class="cd-value">+91 8619376983</div>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="cd-icon">🕐</div>
+        <div>
+          <div class="cd-label">Hours</div>
+          <div class="cd-value">Fri–Sat–Sun: 6:00 PM – 8:00 PM IST</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-form reveal">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" placeholder="Hello">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" placeholder="Ajmer">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Business Email</label>
+      <input type="email" placeholder="you@company.com">
+    </div>
+    <div class="form-group">
+      <label>Company / Brand Name</label>
+      <input type="text" placeholder="Your Company">
+    </div>
+    <div class="form-group">
+      <label for="select">Service Interested In</label>
+      <select id="select" name="select">
+        <option value="" disabled selected>Select a service…</option>
+        <option>Performance Marketing</option>
+        <option>SEO & Content Strategy</option>
+        <option>Social Media Marketing</option>
+        <option>Email & Automation</option>
+        <option>Web Design & CRO</option>
+        <option>Brand & Analytics</option>
+        <option>Full Digital Partnership</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tell Us About Your Goals</label>
+      <textarea placeholder="What are your biggest digital marketing challenges? What growth are you targeting?"></textarea>
+    </div>
+    <button class="btn-submit" type="button">
+      Send Message →
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">ADI<span class="highlight-color">.</span></a>
+      <p>Akshat Digital Intelligence — India's most intelligent digital marketing agency, built for brands that want to lead, not follow.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Services</div>
+      <ul>
+        <li><a href="#">Performance Marketing</a></li>
+        <li><a href="#">SEO Strategy</a></li>
+        <li><a href="#">Social Media</a></li>
+        <li><a href="#">Email Marketing</a></li>
+        <li><a href="#">Web & CRO</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <ul>
+        <li><a href="#">About ADI</a></li>
+        <li><a href="#">Case Studies</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Follow Us</div>
+      <ul>
+        <li><a href="https://www.linkedin.com/company/akshat-digital-intelligence-adi?trk=blended-typeahead">LinkedIn</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Twitter / X</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Akshat Digital Intelligence. All rights reserved.</div>
+    <div class="flex-container">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(2)';
+      ring.style.opacity = '0.8';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.opacity = '0.5';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.style.padding = '1rem 4rem';
+    } else {
+      nav.style.padding = '1.5rem 4rem';
+    }
+  });
+
+  // Form submit
+  document.querySelector('.btn-submit').addEventListener('click', function() {
+    this.textContent = '✓ Message Sent!';
+    this.style.background = '#16a34a';
+    setTimeout(() => {
+      this.textContent = 'Send Message →';
+      this.style.background = '';
+    }, 3000);
+  });
+</script>
+</body>
+</html>
