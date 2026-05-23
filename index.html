@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADI — Akshat Digital Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght=0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #0a0a0f;
@@ -266,16 +266,23 @@
   .ring-2 .ring-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
 
   .visual-center {
-    position: absolute; inset: 25%;
+    position: absolute; inset: 20%;
     background: var(--ink);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 20px 60px rgba(10,10,15,0.25);
-    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(10,10,15,0.3);
+    border: 2px solid rgba(255,255,255,0.05);
   }
-  .vc-text img {
-    max-width: 85%; height: auto; object-fit: contain;
+  .vc-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    color: #fff;
+    letter-spacing: -0.05em;
+    text-align: center;
+    line-height: 1;
   }
+  .vc-text span { color: var(--blue); }
 
   .hero-stats {
     position: absolute; bottom: 2rem; left: 4rem; right: 4rem;
@@ -638,7 +645,8 @@
       <div class="visual-ring ring-2"><div class="ring-dot"></div></div>
       <div class="visual-ring ring-3"><div class="ring-dot"></div></div>
       <div class="visual-center">
-        <div class="vc-text"><img src="InShot_20260418_180815588.png" width="600" height="350" alt="ADI Logo Graphics"></div>
+        <!-- Default Logo Typography Layout Engine Replacement -->
+        <div class="vc-text">ADI<span>.</span></div>
       </div>
     </div>
   </div>
