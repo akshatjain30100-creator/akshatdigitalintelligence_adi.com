@@ -209,7 +209,7 @@
             margin-bottom: 12px;
             color: #0f172a;
             font-weight: 700;
-            padding-right: 40px; /* Space for delete icon */
+            padding-right: 40px;
         }
         body.dark-mode .post h2, body.dark-mode .post h3 {
             color: #f8fafc;
@@ -270,7 +270,7 @@
             background: none;
             border: none;
             color: #ef4444;
-            font-size: 0.95rem;
+            font-size: 0.90rem;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
@@ -280,24 +280,31 @@
             padding: 4px 8px;
             border-radius: 4px;
             transition: background 0.2s;
+            opacity: 0.7;
         }
         .delete-btn:hover {
             background: #fee2e2;
             color: #b91c1c;
+            opacity: 1;
         }
         body.dark-mode .delete-btn:hover {
             background: #451a03;
             color: #fca5a5;
         }
 
-        /* Footer */
+        /* Footer Section Styling */
         footer {
             text-align: center;
-            padding: 30px;
+            padding: 35px 20px;
             background: #0f172a;
             color: #94a3b8;
             margin-top: 60px;
             border-top: 1px solid #1e293b;
+        }
+        footer .brand-name {
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
@@ -365,19 +372,25 @@
                 setView("feed");
             };
 
-            // Handle Deleting a Post
+            // Secure Owner-Only Delete Handling
             const handleDeletePost = (idToDelete, e) => {
-                // Prevent accidental triggers if clicking elements inside card parent container
-                e.stopPropagation();
+                e.stopPropagation(); // Stop parent click events
                 
-                if (confirm("Are you sure you want to delete this blog post?")) {
+                // 1. Prompt for Owner Verification
+                const passwordInput = prompt("🔒 Owner Verification Required:\nPlease enter the Admin Password to delete this post:");
+                
+                // 2. Validate input matches exactly "Aksh2006@$"
+                if (passwordInput === "Aksh2006@$") {
                     const filteredPosts = posts.filter(post => post.id !== idToDelete);
                     setPosts(filteredPosts);
+                    alert("✅ Post successfully deleted by Owner.");
                     
-                    // If the deleted post was currently being viewed full screen, go back to feed
                     if (selectedPost && selectedPost.id === idToDelete) {
                         setSelectedPost(null);
                     }
+                } else if (passwordInput !== null) {
+                    // Password validation failed
+                    alert("❌ Access Denied: Incorrect password. Only the website owner can delete content.");
                 }
             };
 
@@ -446,7 +459,7 @@
                                 
                                 <div style={{ marginTop: '30px', borderTop: '1px solid #e2e8f0', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
                                     <button className="delete-btn" onClick={(e) => handleDeletePost(selectedPost.id, e)}>
-                                        🗑️ Delete Article
+                                        🔒 Owner Delete
                                     </button>
                                 </div>
                             </article>
@@ -481,7 +494,7 @@
                                                         className="delete-btn" 
                                                         onClick={(e) => handleDeletePost(post.id, e)}
                                                     >
-                                                        🗑️ Delete
+                                                        🔒 Owner Delete
                                                     </button>
                                                 </div>
                                             </article>
@@ -492,9 +505,9 @@
                         )}
                     </main>
 
-                    {/* Footer */}
+                    {/* Footer - Updated Brand Name */}
                     <footer>
-                        <p>&copy; 2026 The Growth Lab. Open community knowledge platform.</p>
+                        <p>&copy; 2026 <span className="brand-name">Akshat Digital Intelligence ADI</span>. Open community knowledge platform.</p>
                     </footer>
                 </div>
             );
