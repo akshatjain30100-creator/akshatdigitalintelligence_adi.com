@@ -315,7 +315,7 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const INITIAL_POSTS = [
+        const DEFAULT_POSTS = [
             {
                 id: 1,
                 title: "Demystifying Modern SEO: Content Strategies that Rank in 2026",
@@ -335,7 +335,12 @@
         ];
 
         function App() {
-            const [posts, setPosts] = useState(INITIAL_POSTS);
+            // Load initialization feed values from localStorage if they exist, otherwise use default mock data
+            const [posts, setPosts] = useState(() => {
+                const savedPosts = localStorage.getItem("growth_lab_posts");
+                return savedPosts ? JSON.parse(savedPosts) : DEFAULT_POSTS;
+            });
+
             const [darkMode, setDarkMode] = useState(false);
             const [selectedPost, setSelectedPost] = useState(null);
             const [view, setView] = useState("feed");
@@ -345,6 +350,11 @@
             const [excerpt, setExcerpt] = useState("");
             const [content, setContent] = useState("");
             const [image, setImage] = useState("");
+
+            // Sync structural changes with user's localStorage system automatically
+            useEffect(() => {
+                localStorage.setItem("growth_lab_posts", JSON.stringify(posts));
+            }, [posts]);
 
             useEffect(() => {
                 if (darkMode) {
@@ -372,14 +382,12 @@
                 setView("feed");
             };
 
-            // Secure Admin-Only Delete Handling
+            // Secure Admin-Only Delete Handling with Persistent State Saving
             const handleDeletePost = (idToDelete, e) => {
-                e.stopPropagation(); // Stop parent click events passing down
+                e.stopPropagation(); 
                 
-                // 1. Prompt for security verification code
                 const passwordInput = prompt("🔒 Owner Verification Required:\nPlease enter the Admin Password to delete this post:");
                 
-                // 2. Validate input matches exactly "aksh2006@$"
                 if (passwordInput === "aksh2006@$") {
                     const filteredPosts = posts.filter(post => post.id !== idToDelete);
                     setPosts(filteredPosts);
@@ -389,7 +397,6 @@
                         setSelectedPost(null);
                     }
                 } else if (passwordInput !== null) {
-                    // Password input validation failed
                     alert("❌ Access Denied: Incorrect password. Only the website owner can delete content.");
                 }
             };
