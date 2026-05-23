@@ -372,28 +372,25 @@
                 setView("feed");
             };
 
-            // Dynamic Matching Delete Logic
-            const handleDeletePost = (postObject, e) => {
-                e.stopPropagation(); // Prevents layout selection triggers
+            // Secure Admin-Only Delete Handling
+            const handleDeletePost = (idToDelete, e) => {
+                e.stopPropagation(); // Stop parent click events passing down
                 
-                // 1. Prompt request specifying title matching rules
-                const userTypedInput = prompt(
-                    `🔒 Delete Post Authorization:\nTo verify removal, type the EXACT title of this post:\n\n"${postObject.title}"`
-                );
+                // 1. Prompt for security verification code
+                const passwordInput = prompt("🔒 Owner Verification Required:\nPlease enter the Admin Password to delete this post:");
                 
-                // 2. Validate input strings matches the chosen target exactly
-                if (userTypedInput === postObject.title) {
-                    const updatedFeed = posts.filter(item => item.id !== postObject.id);
-                    setPosts(updatedFeed);
-                    alert("✅ Post successfully removed from the system.");
+                // 2. Validate input matches exactly "aksh2006@$"
+                if (passwordInput === "aksh2006@$") {
+                    const filteredPosts = posts.filter(post => post.id !== idToDelete);
+                    setPosts(filteredPosts);
+                    alert("✅ Post successfully deleted by Owner.");
                     
-                    // Route user safely back to main layout view if inside deep page
-                    if (selectedPost && selectedPost.id === postObject.id) {
+                    if (selectedPost && selectedPost.id === idToDelete) {
                         setSelectedPost(null);
                     }
-                } else if (userTypedInput !== null) {
-                    // String mismatch handling warning
-                    alert("❌ Validation Failed: Input did not accurately match the target title. The article remains visible.");
+                } else if (passwordInput !== null) {
+                    // Password input validation failed
+                    alert("❌ Access Denied: Incorrect password. Only the website owner can delete content.");
                 }
             };
 
@@ -461,7 +458,7 @@
                                 <p className="content">{selectedPost.content}</p>
                                 
                                 <div style={{ marginTop: '30px', borderTop: '1px solid #e2e8f0', paddingTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button className="delete-btn" onClick={(e) => handleDeletePost(selectedPost, e)}>
+                                    <button className="delete-btn" onClick={(e) => handleDeletePost(selectedPost.id, e)}>
                                         🔒 Owner Delete
                                     </button>
                                 </div>
@@ -495,7 +492,7 @@
                                                     </button>
                                                     <button 
                                                         className="delete-btn" 
-                                                        onClick={(e) => handleDeletePost(post, e)}
+                                                        onClick={(e) => handleDeletePost(post.id, e)}
                                                     >
                                                         🔒 Owner Delete
                                                     </button>
