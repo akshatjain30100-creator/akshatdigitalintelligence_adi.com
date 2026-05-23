@@ -67,15 +67,22 @@
   }
 
   .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.6rem;
-    letter-spacing: -0.04em;
-    color: var(--ink);
+    display: flex;
+    align-items: center;
     text-decoration: none;
     z-index: 102;
   }
-  .nav-logo span, .highlight-color { color: var(--blue); }
+  
+  .nav-logo img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-logo:hover img {
+    transform: scale(1.05);
+  }
 
   .nav-links {
     display: flex; gap: 2.5rem; list-style: none;
@@ -266,23 +273,20 @@
   .ring-2 .ring-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
 
   .visual-center {
-    position: absolute; inset: 20%;
-    background: var(--ink);
+    position: absolute; inset: 16%;
+    background: #fff;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 20px 60px rgba(10,10,15,0.3);
-    border: 2px solid rgba(255,255,255,0.05);
+    box-shadow: 0 20px 60px rgba(10,10,15,0.15);
+    border: 2px solid rgba(26,47,255,0.1);
+    overflow: hidden;
   }
-  .vc-text {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2.2rem, 4vw, 3.8rem);
-    color: #fff;
-    letter-spacing: -0.05em;
-    text-align: center;
-    line-height: 1;
+  
+  .visual-center img {
+    width: 104%;
+    height: 104%;
+    object-fit: cover;
   }
-  .vc-text span { color: var(--blue); }
 
   .hero-stats {
     position: absolute; bottom: 2rem; left: 4rem; right: 4rem;
@@ -469,7 +473,13 @@
   /* ── BRAND FOOTER ── */
   footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 5rem 4rem 4rem; }
   .footer-top { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 4rem; padding-bottom: 4rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .footer-brand .nav-logo { color: #fff; display: block; margin-bottom: 1.2rem; font-size: 1.8rem; }
+  
+  .footer-brand .nav-logo {
+    margin-bottom: 1.5rem;
+  }
+  .footer-brand .nav-logo img {
+    height: 54px;
+  }
   .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 300px; }
   
   .footer-col-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; margin-bottom: 1.4rem; }
@@ -554,10 +564,10 @@
 
   /* PORTRAIT SMARTPHONES & COMPACT MOBILE SCREENS */
   @media (max-width: 640px) {
-    /* Safe termination of custom desktop vectors on fine mouse pointer hardware profiles */
     .cursor, .cursor-ring { display: none !important; }
     
     nav { padding: 1rem 1.5rem; }
+    .nav-logo img { height: 34px; }
     .hero { padding: 7.5rem 1.2rem 4rem; gap: 3.5rem; }
     .hero-visual { width: 260px; }
     .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 1.8rem 1rem; margin-top: 3rem; }
@@ -588,6 +598,7 @@
     footer { padding: 4rem 1.2rem 2.5rem; }
     .footer-top { grid-template-columns: 1fr; gap: 2.5rem; }
     .footer-brand p { max-width: 100%; }
+    .footer-brand .nav-logo img { height: 44px; }
     .map-box { padding: 6px; }
     
     .footer-bottom { flex-direction: column; gap: 1.5rem; text-align: center; }
@@ -603,7 +614,9 @@
 
 <!-- HEADER NAVIGATION -->
 <nav>
-  <a href="#" class="nav-logo">ADI<span>.</span></a>
+  <a href="#" class="nav-logo">
+    <img src="Gemini_Generated_Image_69og7b69og7b69og.png" alt="Akshat Digital Intelligence Logo">
+  </a>
   
   <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Tray">
     <span></span>
@@ -645,8 +658,8 @@
       <div class="visual-ring ring-2"><div class="ring-dot"></div></div>
       <div class="visual-ring ring-3"><div class="ring-dot"></div></div>
       <div class="visual-center">
-        <!-- Default Logo Typography Layout Engine Replacement -->
-        <div class="vc-text">ADI<span>.</span></div>
+        <!-- Circular Framed Creative Brand Asset Integration -->
+        <img src="Gemini_Generated_Image_69og7b69og7b69og.png" alt="ADI Digital Insignia">
       </div>
     </div>
   </div>
@@ -960,7 +973,9 @@
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
-      <a href="#" class="nav-logo">ADI<span class="highlight-color">.</span></a>
+      <a href="#" class="nav-logo">
+        <img src="Gemini_Generated_Image_69og7b69og7b69og.png" alt="Akshat Digital Intelligence Logo">
+      </a>
       <p>Akshat Digital Intelligence — India's most intelligent digital marketing agency, built for brands that want to lead, not follow.</p>
     </div>
     <div class="footer-col">
@@ -1028,7 +1043,6 @@
       navLinks.classList.toggle('active');
     });
 
-    // Close view tray safely on navigation link routing
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         menuToggle.classList.remove('active');
@@ -1042,7 +1056,6 @@
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
 
-  // Run cursor mapping loops exclusively for hardware with precise pointing vectors (Desktops)
   if (window.matchMedia('(pointer: fine)').matches && cursor && ring) {
     document.addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
