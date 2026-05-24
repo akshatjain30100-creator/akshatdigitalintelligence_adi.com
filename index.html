@@ -512,7 +512,6 @@
   @media (max-width: 1024px) {
     nav { padding: 1.2rem 2.5rem; }
     
-    /* Mobilized Slide-out Drawer Panel Link Framework */
     .menu-toggle { display: flex; }
     .nav-links {
       position: fixed; top: 0; right: -100%; width: 300px; height: 100vh;
@@ -524,7 +523,6 @@
     }
     .nav-links.active { right: 0; }
     
-    /* Cross icon transformations for menu toggler */
     .menu-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     .menu-toggle.active span:nth-child(2) { opacity: 0; }
     .menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -608,7 +606,6 @@
 </head>
 <body>
 
-<!-- Widescreen Custom Tracker Cursor Nodes -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
@@ -658,7 +655,6 @@
       <div class="visual-ring ring-2"><div class="ring-dot"></div></div>
       <div class="visual-ring ring-3"><div class="ring-dot"></div></div>
       <div class="visual-center">
-        <!-- Circular Framed Creative Brand Asset Integration -->
         <img src="Gemini_Generated_Image_69og7b69og7b69og.png" alt="ADI Digital Insignia">
       </div>
     </div>
@@ -696,7 +692,6 @@
     <div class="marquee-item"><span class="dot"></span>Growth Hacking</div>
     <div class="marquee-item"><span class="dot"></span>Data Analytics</div>
     <div class="marquee-item"><span class="dot"></span>Web Development</div>
-    <!-- Infinite Repeat loop clones -->
     <div class="marquee-item"><span class="dot"></span>SEO Dominance</div>
     <div class="marquee-item"><span class="dot"></span>Performance Ads</div>
     <div class="marquee-item"><span class="dot"></span>Brand Strategy</div>
@@ -890,7 +885,7 @@
   </div>
 </section>
 
-<!-- OUTREACH SYSTEM -->
+<!-- OUTREACH SYSTEM (INTEGRATED GMAIL PIPELINE) -->
 <section class="contact" id="contact">
   <div class="contact-info reveal">
     <div class="section-label">Get In Touch</div>
@@ -929,28 +924,35 @@
     </div>
   </div>
 
-  <div class="contact-form reveal">
+  <!-- Functional Submission Form Frame -->
+  <form class="contact-form reveal" id="adiContactForm" action="https://api.web3forms.com/submit" method="POST">
+    
+    <!-- Step 2: Paste your generated Access Key right inside the value="" quotes below -->
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New High-Value Lead from ADI Website">
+    <input type="hidden" name="from_name" value="ADI Growth Pipeline">
+    
     <div class="form-row">
       <div class="form-group">
-        <label>First Name</label>
-        <input type="text" placeholder="Hello">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="First Name" placeholder="Hello" required>
       </div>
       <div class="form-group">
-        <label>Last Name</label>
-        <input type="text" placeholder="Ajmer">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="Last Name" placeholder="Ajmer" required>
       </div>
     </div>
     <div class="form-group">
-      <label>Business Email</label>
-      <input type="email" placeholder="you@company.com">
+      <label for="email">Business Email</label>
+      <input type="email" id="email" name="Email Address" placeholder="you@company.com" required>
     </div>
     <div class="form-group">
-      <label>Company / Brand Name</label>
-      <input type="text" placeholder="Your Company">
+      <label for="company">Company / Brand Name</label>
+      <input type="text" id="company" name="Company Name" placeholder="Your Company">
     </div>
     <div class="form-group">
       <label for="select">Service Interested In</label>
-      <select id="select" name="select">
+      <select id="select" name="Requested Service" required>
         <option value="" disabled selected>Select a service…</option>
         <option>Performance Marketing</option>
         <option>SEO & Content Strategy</option>
@@ -962,14 +964,15 @@
       </select>
     </div>
     <div class="form-group">
-      <label>Tell Us About Your Goals</label>
-      <textarea placeholder="What are your biggest digital marketing challenges?"></textarea>
+      <label for="goals">Tell Us About Your Goals</label>
+      <textarea id="goals" name="Client Business Goals" placeholder="What are your biggest digital marketing challenges?" required></textarea>
     </div>
-    <button class="btn-submit" type="button">Send Message →</button>
-  </div>
+    
+    <button class="btn-submit" type="submit">Send Message →</button>
+  </form>
 </section>
 
-<!-- FOOTER SYSTEM -->
+<!-- BRAND FOOTER -->
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
@@ -1033,7 +1036,7 @@
 </footer>
 
 <script>
-  // Responsive Toggle Handler for Mobile Drawer
+  // Mobile Tray Navigation Configuration Menu
   const menuToggle = document.getElementById('menuToggle');
   const navLinks = document.getElementById('navLinks');
   
@@ -1051,7 +1054,7 @@
     });
   }
 
-  // Widescreen Interaction Micro-Cursor Engines
+  // Mouse Trace Tracker Nodes Logic
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
   let mx = 0, my = 0, rx = 0, ry = 0;
@@ -1081,7 +1084,7 @@
     });
   }
 
-  // Intersection Viewport Reveal Engine
+  // Document Layout Viewport Reveal Intersection Engine
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
@@ -1093,7 +1096,7 @@
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
 
-  // Adaptive Scrolling Header Layout Padding Engine
+  // Dynamic Scroll Navigation Adaptability Matrix
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 60 && window.innerWidth > 1024) {
@@ -1103,16 +1106,52 @@
     }
   });
 
-  // Contact Pipeline Interface Submit Trigger Mock
-  const submitBtn = document.querySelector('.btn-submit');
-  if (submitBtn) {
-    submitBtn.addEventListener('click', function() {
-      this.textContent = '✓ Message Sent!';
-      this.style.background = '#16a34a';
-      setTimeout(() => {
-        this.textContent = 'Send Message →';
-        this.style.background = '';
-      }, 3000);
+  // AJAX Seamless Form Processing Logic (Stays on Site)
+  const form = document.getElementById('adiContactForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Stop standard full-page reloading sequence
+      
+      const submitButton = this.querySelector('.btn-submit');
+      const originalText = submitButton.textContent;
+      
+      submitButton.textContent = 'Sending Message...';
+      submitButton.disabled = true;
+      submitButton.style.background = '#6b6860';
+
+      const formData = new FormData(form);
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      })
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+          // Success Response UI Transformation
+          submitButton.textContent = '✓ Sent Successfully!';
+          submitButton.style.background = '#16a34a';
+          form.reset();
+        } else {
+          // Failure Response Fallback Handling
+          console.log(json);
+          submitButton.textContent = '⚠ Submission Failed';
+          submitButton.style.background = '#dc2626';
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        submitButton.textContent = '⚠ Network Error';
+        submitButton.style.background = '#dc2626';
+      })
+      .then(() => {
+        // Re-stabilize interface states automatically
+        setTimeout(() => {
+          submitButton.textContent = originalText;
+          submitButton.disabled = false;
+          submitButton.style.background = '';
+        }, 4000);
+      });
     });
   }
 </script>
