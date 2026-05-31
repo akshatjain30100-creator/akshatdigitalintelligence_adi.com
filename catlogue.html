@@ -40,7 +40,7 @@
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-600 to-red-800">Manage. Edit. Remove.</span>
         </h1>
         <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light">
-            High-performance design and technical solutions. Updates sync globally across all active users instantly and permanently.
+            High-performance design and technical solutions. All structural modifications sync globally and permanently across all devices.
         </p>
     </header>
 
@@ -75,9 +75,9 @@
                     <textarea id="srv-desc" rows="3" required class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Image URL</label>
-                    <input type="url" id="srv-img-url" required placeholder="https://images.unsplash.com/..." class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150">
-                    <p id="upload-note" class="text-[11px] text-gray-500 mt-1">Provide a direct valid web link link to an image file.</p>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Photo Image URL</label>
+                    <input type="url" id="srv-img-url" required placeholder="https://images.unsplash.com/photo-..." class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150">
+                    <p id="upload-note" class="text-[11px] text-gray-500 mt-1">Paste a valid image address link from the web.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Price / Rate</label>
@@ -94,11 +94,10 @@
     <script>
         const ADMIN_PASSWORD = "aksh@$";
         
-        // Permanent high-availability public synchronization channel identification parameters
+        // Secure High-Availability Global Datastore Parameter configuration 
         const BIN_ID = "6659fbd7e41b4d34e4fc767e"; 
         const API_ENDPOINT = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-        // Default Baseline Objects if global channel is reset or fully empty
         const defaultServices = [
             {
                 title: "Premium Web Design",
@@ -116,7 +115,21 @@
 
         let services = [];
 
-        // Fetches data seamlessly from central cloud matrix pipeline
+        // Dynamic State UI Sync status display controller
+        function updateStatusIndicator(text, colorClass) {
+            const dot = document.getElementById('sync-dot');
+            const label = document.getElementById('sync-text');
+            if (!dot || !label) return;
+
+            label.innerText = text;
+            dot.className = "w-2 h-2 rounded-full inline-block ";
+            
+            if (colorClass === "green") dot.classList.add("bg-green-500", "animate-pulse");
+            if (colorClass === "yellow") dot.classList.add("bg-yellow-500", "animate-bounce");
+            if (colorClass === "red") dot.classList.add("bg-red-500");
+        }
+
+        // Pull down the latest dataset from centralized remote data repository
         async function fetchGlobalData() {
             try {
                 const response = await fetch(`${API_ENDPOINT}/latest`, {
@@ -126,20 +139,20 @@
                 
                 if (response.ok) {
                     const cloudData = await response.json();
-                    if (Array.isArray(cloudData) && cloudData.length > 0) {
+                    if (Array.isArray(cloudData)) {
                         services = cloudData;
-                        localStorage.setItem('cached_services', JSON.stringify(services));
+                        localStorage.setItem('cached_catalogue', JSON.stringify(services));
                         updateStatusIndicator("Live Synced", "green");
                         renderCatalogue();
                         return;
                     }
                 }
-                throw new Error("Invalid structure returned from endpoint server.");
+                throw new Error("Invalid structure payload configuration received.");
             } catch (err) {
-                console.warn("Global network synchronization pipeline down. Reading local caches:", err);
-                const localData = localStorage.getItem('cached_services');
+                console.warn("Global Cloud server unreachable. Fetching local backup snapshots:", err);
+                const localData = localStorage.getItem('cached_catalogue');
                 services = localData ? JSON.parse(localData) : defaultServices;
-                updateStatusIndicator("Local Cache", "red");
+                updateStatusIndicator("Offline Cache", "red");
                 renderCatalogue();
             } finally {
                 document.getElementById('loading-placeholder').classList.add('hidden');
@@ -147,10 +160,10 @@
             }
         }
 
-        // Saves current data straight to cloud cluster instance permanently
+        // Commits absolute permanent state changes out to global cluster database 
         async function saveGlobalData() {
-            updateStatusIndicator("Saving updates...", "yellow");
-            localStorage.setItem('cached_services', JSON.stringify(services));
+            updateStatusIndicator("Saving Data...", "yellow");
+            localStorage.setItem('cached_catalogue', JSON.stringify(services));
             
             try {
                 const response = await fetch(API_ENDPOINT, {
@@ -162,32 +175,25 @@
                     body: JSON.stringify(services)
                 });
                 
-                if (!response.ok) throw new Error("Cloud rejected updated array footprint structural data.");
+                if (!response.ok) throw new Error("Cloud update write protocol request rejected.");
                 updateStatusIndicator("Live Synced", "green");
             } catch (err) {
-                console.error("Critical Cloud Database Write Error:", err);
+                console.error("Critical Synchronization Failure:", err);
                 updateStatusIndicator("Saved Locally", "red");
-                alert("Warning: Changes saved to your browser but failed to broadcast globally. Check internet connectivity.");
             }
         }
 
-        function updateStatusIndicator(text, colorClass) {
-            const dot = document.getElementById('sync-dot');
-            const label = document.getElementById('sync-text');
-            
-            if(!dot || !label) return;
-            label.innerText = text;
-            dot.className = "w-2 h-2 rounded-full inline-block ";
-            
-            if (colorClass === "green") dot.classList.add("bg-green-500", "animate-pulse");
-            if (colorClass === "yellow") dot.classList.add("bg-yellow-500", "animate-bounce");
-            if (colorClass === "red") dot.classList.add("bg-red-500");
-        }
-
-        // Core Render Grid Function
         function renderCatalogue() {
             const grid = document.getElementById('catalogue-grid');
             grid.innerHTML = ''; 
+
+            if (services.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 border border-dashed border-gray-800 rounded-2xl">
+                        <p class="text-gray-500 uppercase tracking-wider text-sm">No services listed yet.</p>
+                    </div>`;
+                return;
+            }
 
             services.forEach((service, index) => {
                 const cardHtml = `
@@ -225,7 +231,6 @@
             });
         }
 
-        // Verification mechanism
         function verifyAdmin(promptMessage) {
             const passwordInput = prompt(promptMessage);
             if (passwordInput === ADMIN_PASSWORD) return true;
@@ -233,7 +238,6 @@
             return false;
         }
 
-        // Open Modal for adding an item
         function openAddModal() {
             if (!verifyAdmin("Enter Admin Password to add a new service:")) return;
             
@@ -244,7 +248,6 @@
             toggleModalDisplay(true);
         }
 
-        // Open Modal for modifying an existing item
         function openEditModal(index) {
             if (!verifyAdmin("Enter Admin Password to edit this item:")) return;
 
@@ -254,7 +257,6 @@
             document.getElementById('submit-btn').innerText = "Save Updates";
             document.getElementById('edit-index').value = index; 
             
-            // Populating form fields
             document.getElementById('srv-title').value = target.title;
             document.getElementById('srv-desc').value = target.desc;
             document.getElementById('srv-img-url').value = target.img;
@@ -277,7 +279,6 @@
             document.getElementById('service-form').reset();
         }
 
-        // Standardized Form Execution Controller
         function handleFormSubmit(event) {
             event.preventDefault();
 
@@ -288,10 +289,10 @@
             const editIndexValue = document.getElementById('edit-index').value;
 
             if (editIndexValue === "") {
-                // Creation context path allocation logic
+                // Add context entry push sequence
                 services.unshift({ title, desc, img: imgUrl, price });
             } else {
-                // Modification updating context path allocation logic
+                // Edit target array assignment sequence
                 const idx = parseInt(editIndexValue);
                 services[idx].title = title;
                 services[idx].desc = desc;
@@ -301,19 +302,18 @@
             
             renderCatalogue();
             closeAdminModal();
-            saveGlobalData(); // Execute instant push to the permanent cloud instance
+            saveGlobalData(); // Instantly write updates down to the global storage cloud
         }
 
-        // Handles secure removal of individual catalogue elements
         function deleteService(index) {
             if (verifyAdmin("Enter Admin Password to permanently remove this service:")) {
                 services.splice(index, 1);
                 renderCatalogue();
-                saveGlobalData(); // Broadcast structural deletion instantly to the cloud instance
+                saveGlobalData(); // Instantly push absolute deletion array profile down to cloud storage
             }
         }
 
-        // Initialize and listen for automated multi-device cloud synchronization updates every 8 seconds
+        // Initialize and execute continuous global client synchronizations every 8 seconds
         document.addEventListener("DOMContentLoaded", () => {
             fetchGlobalData();
             setInterval(fetchGlobalData, 8000); 
