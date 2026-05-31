@@ -22,8 +22,8 @@
             </span>
             <div class="flex items-center space-x-3">
                 <span id="sync-status" class="text-xs text-gray-500 flex items-center space-x-1">
-                    <span id="sync-dot" class="w-2 h-2 rounded-full bg-yellow-500 inline-block animate-pulse"></span>
-                    <span id="sync-text">Connecting...</span>
+                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
+                    <span>Live Synced</span>
                 </span>
                 <button onclick="openAddModal()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-red-900/30 transition duration-200 cursor-pointer red-glow">
                     + Add Service (Admin)
@@ -40,7 +40,7 @@
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-600 to-red-800">Manage. Edit. Remove.</span>
         </h1>
         <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light">
-            High-performance design and technical solutions. All structural modifications sync globally and permanently across all devices.
+            High-performance design and technical solutions. Updates sync globally across all active users instantly.
         </p>
     </header>
 
@@ -51,7 +51,7 @@
         </div>
 
         <div id="catalogue-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
-            </div>
+        </div>
     </main>
 
     <div id="admin-modal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
@@ -75,9 +75,9 @@
                     <textarea id="srv-desc" rows="3" required class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Photo Image URL</label>
-                    <input type="url" id="srv-img-url" required placeholder="https://images.unsplash.com/photo-..." class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150">
-                    <p id="upload-note" class="text-[11px] text-gray-500 mt-1">Paste a valid image address link from the web.</p>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Upload Photo</label>
+                    <input type="file" id="srv-img-file" accept="image/*" class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-red-900/40 file:text-xs file:font-bold file:uppercase file:bg-red-950/20 file:text-red-400 hover:file:bg-red-900/30 cursor-pointer">
+                    <p id="upload-note" class="text-[11px] text-gray-500 mt-1">Select an image from your device.</p>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Price / Rate</label>
@@ -94,10 +94,9 @@
     <script>
         const ADMIN_PASSWORD = "aksh@$";
         
-        // Secure High-Availability Global Datastore Parameter configuration 
-        const BIN_ID = "6659fbd7e41b4d34e4fc767e"; 
-        const API_ENDPOINT = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const STORAGE_BIN_KEY = "proservices_studio_shared_catalogue_v1";
 
+        // Default Fallback Baseline Objects
         const defaultServices = [
             {
                 title: "Premium Web Design",
@@ -114,13 +113,71 @@
         ];
 
         let services = [];
+        let syncLocked = false; // Prevents background fetch from overwriting active client edits instantly
 
-        // Dynamic State UI Sync status display controller
+        // Pulls latest centralized state data from Cloud Storage Bin Relay
+        async function fetchGlobalData() {
+            // Ignore background background fetches if user just performed an update action
+            if (syncLocked) return;
+
+            updateStatusIndicator("Syncing...", "yellow");
+            try {
+                const response = await fetch(`https://kvdb.io/MN87XgS77K6K6NfD9GfJq5/${STORAGE_BIN_KEY}`);
+                if (response.ok) {
+                    const cloudData = await response.json();
+                    if (Array.isArray(cloudData)) {
+                        services = cloudData;
+                        localStorage.setItem(STORAGE_BIN_KEY, JSON.stringify(services));
+                        updateStatusIndicator("Live Synced", "green");
+                        return;
+                    }
+                }
+                throw new Error("Empty cloud data structure or database allocation uninitialized.");
+            } catch (err) {
+                console.warn("Cloud DB unavailable. Loading localized synchronization matrix:", err);
+                const localData = localStorage.getItem(STORAGE_BIN_KEY);
+                services = localData ? JSON.parse(localData) : defaultServices;
+                updateStatusIndicator("Local Mode", "red");
+            } finally {
+                document.getElementById('loading-placeholder').classList.add('hidden');
+                document.getElementById('catalogue-grid').classList.remove('hidden');
+                renderCatalogue();
+            }
+        }
+
+        // Saves current state directly out to cloud network pipeline
+        async function saveGlobalData() {
+            // Lock background synchronization loops
+            syncLocked = true;
+            updateStatusIndicator("Saving changes...", "yellow");
+            
+            // Save locally right away
+            localStorage.setItem(STORAGE_BIN_KEY, JSON.stringify(services));
+            
+            try {
+                const response = await fetch(`https://kvdb.io/MN87XgS77K6K6NfD9GfJq5/${STORAGE_BIN_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(services)
+                });
+                if (!response.ok) throw new Error("Data upload payload rejected.");
+                updateStatusIndicator("Live Synced", "green");
+            } catch (err) {
+                console.error("Global synchronization failed. Stored offline:", err);
+                updateStatusIndicator("Saved Offline", "red");
+            } finally {
+                // Release sync-lock after 4 seconds to give server infrastructure breathing room
+                setTimeout(() => {
+                    syncLocked = false;
+                }, 4000);
+            }
+        }
+
         function updateStatusIndicator(text, colorClass) {
-            const dot = document.getElementById('sync-dot');
-            const label = document.getElementById('sync-text');
-            if (!dot || !label) return;
-
+            const el = document.getElementById('sync-status');
+            const dot = el.querySelector('span:first-child');
+            const label = el.querySelector('span:last-child');
+            
             label.innerText = text;
             dot.className = "w-2 h-2 rounded-full inline-block ";
             
@@ -129,60 +186,7 @@
             if (colorClass === "red") dot.classList.add("bg-red-500");
         }
 
-        // Pull down the latest dataset from centralized remote data repository
-        async function fetchGlobalData() {
-            try {
-                const response = await fetch(`${API_ENDPOINT}/latest`, {
-                    method: 'GET',
-                    headers: { 'X-Bin-Meta': 'false' }
-                });
-                
-                if (response.ok) {
-                    const cloudData = await response.json();
-                    if (Array.isArray(cloudData)) {
-                        services = cloudData;
-                        localStorage.setItem('cached_catalogue', JSON.stringify(services));
-                        updateStatusIndicator("Live Synced", "green");
-                        renderCatalogue();
-                        return;
-                    }
-                }
-                throw new Error("Invalid structure payload configuration received.");
-            } catch (err) {
-                console.warn("Global Cloud server unreachable. Fetching local backup snapshots:", err);
-                const localData = localStorage.getItem('cached_catalogue');
-                services = localData ? JSON.parse(localData) : defaultServices;
-                updateStatusIndicator("Offline Cache", "red");
-                renderCatalogue();
-            } finally {
-                document.getElementById('loading-placeholder').classList.add('hidden');
-                document.getElementById('catalogue-grid').classList.remove('hidden');
-            }
-        }
-
-        // Commits absolute permanent state changes out to global cluster database 
-        async function saveGlobalData() {
-            updateStatusIndicator("Saving Data...", "yellow");
-            localStorage.setItem('cached_catalogue', JSON.stringify(services));
-            
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Bin-Meta': 'false'
-                    },
-                    body: JSON.stringify(services)
-                });
-                
-                if (!response.ok) throw new Error("Cloud update write protocol request rejected.");
-                updateStatusIndicator("Live Synced", "green");
-            } catch (err) {
-                console.error("Critical Synchronization Failure:", err);
-                updateStatusIndicator("Saved Locally", "red");
-            }
-        }
-
+        // Core Render Grid Function
         function renderCatalogue() {
             const grid = document.getElementById('catalogue-grid');
             grid.innerHTML = ''; 
@@ -231,6 +235,7 @@
             });
         }
 
+        // Verification mechanism
         function verifyAdmin(promptMessage) {
             const passwordInput = prompt(promptMessage);
             if (passwordInput === ADMIN_PASSWORD) return true;
@@ -238,16 +243,20 @@
             return false;
         }
 
+        // Open Modal for adding an item
         function openAddModal() {
             if (!verifyAdmin("Enter Admin Password to add a new service:")) return;
             
             document.getElementById('modal-title').innerText = "Add New Service";
             document.getElementById('submit-btn').innerText = "Publish Service";
             document.getElementById('edit-index').value = ""; 
+            document.getElementById('srv-img-file').required = true;
+            document.getElementById('upload-note').innerText = "Select an image from your device.";
             
             toggleModalDisplay(true);
         }
 
+        // Open Modal for modifying an existing item
         function openEditModal(index) {
             if (!verifyAdmin("Enter Admin Password to edit this item:")) return;
 
@@ -257,10 +266,13 @@
             document.getElementById('submit-btn').innerText = "Save Updates";
             document.getElementById('edit-index').value = index; 
             
+            // Populating form fields
             document.getElementById('srv-title').value = target.title;
             document.getElementById('srv-desc').value = target.desc;
-            document.getElementById('srv-img-url').value = target.img;
             document.getElementById('srv-price').value = target.price;
+            
+            document.getElementById('srv-img-file').required = false;
+            document.getElementById('upload-note').innerText = "Leave blank to keep current photo.";
             
             toggleModalDisplay(true);
         }
@@ -279,44 +291,56 @@
             document.getElementById('service-form').reset();
         }
 
+        // Standardized Form Execution Controller
         function handleFormSubmit(event) {
             event.preventDefault();
 
             const title = document.getElementById('srv-title').value;
             const desc = document.getElementById('srv-desc').value;
-            const imgUrl = document.getElementById('srv-img-url').value;
+            const fileInput = document.getElementById('srv-img-file');
             const price = document.getElementById('srv-price').value;
             const editIndexValue = document.getElementById('edit-index').value;
 
-            if (editIndexValue === "") {
-                // Add context entry push sequence
-                services.unshift({ title, desc, img: imgUrl, price });
-            } else {
-                // Edit target array assignment sequence
-                const idx = parseInt(editIndexValue);
-                services[idx].title = title;
-                services[idx].desc = desc;
-                services[idx].img = imgUrl; 
-                services[idx].price = price;
+            const file = fileInput.files[0];
+
+            function save(finalImgUrl) {
+                if (editIndexValue === "") {
+                    services.unshift({ title, desc, img: finalImgUrl, price });
+                } else {
+                    const idx = parseInt(editIndexValue);
+                    services[idx].title = title;
+                    services[idx].desc = desc;
+                    services[idx].price = price;
+                    if (finalImgUrl) services[idx].img = finalImgUrl; 
+                }
+                renderCatalogue();
+                closeAdminModal();
+                saveGlobalData(); // Instantly broadcast state change across cloud network
             }
-            
-            renderCatalogue();
-            closeAdminModal();
-            saveGlobalData(); // Instantly write updates down to the global storage cloud
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => save(reader.result);
+                reader.readAsDataURL(file);
+            } else {
+                const existingImg = editIndexValue !== "" ? services[parseInt(editIndexValue)].img : null;
+                save(existingImg);
+            }
         }
 
+        // Handles secure removal of individual catalogue elements
         function deleteService(index) {
             if (verifyAdmin("Enter Admin Password to permanently remove this service:")) {
                 services.splice(index, 1);
                 renderCatalogue();
-                saveGlobalData(); // Instantly push absolute deletion array profile down to cloud storage
+                saveGlobalData(); // Broadcast state deletion across cloud network
             }
         }
 
-        // Initialize and execute continuous global client synchronizations every 8 seconds
+        // Setup live sync tracking sequence interval (fetches changes made by other users every 10 seconds)
         document.addEventListener("DOMContentLoaded", () => {
             fetchGlobalData();
-            setInterval(fetchGlobalData, 8000); 
+            setInterval(fetchGlobalData, 10000); 
         });
     </script>
 </body>
