@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Service Catalogue - Black & Red Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .modal { transition: opacity 0.25s ease; }
+        /* Smooth subtle crimson reflection effect */
+        .red-glow:hover {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+        }
+    </style>
+</head>
+<body class="bg-[#0b0b0d] text-gray-200 font-sans min-h-screen selection:bg-red-600 selection:text-white">
+
+    <nav class="bg-[#121216] border-b border-red-950/40 sticky top-0 z-50 shadow-lg shadow-black/50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <span class="text-xl font-black tracking-wider text-white">
+                PROSERVICES <span class="text-red-500">STUDIO</span>
+            </span>
+            <button onclick="openAddModal()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md shadow-red-900/30 transition duration-200 cursor-pointer red-glow">
+                + Add Service (Admin)
+            </button>
+        </div>
+    </nav>
+
+    <header class="relative max-w-6xl mx-auto px-4 py-16 text-center overflow-hidden">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight uppercase leading-tight">
+            Explore Our Services. <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-600 to-red-800">Manage. Edit. Remove.</span>
+        </h1>
+        <p class="mt-4 text-gray-400 max-w-2xl mx-auto text-base md:text-lg font-light">
+            High-performance design and technical solutions. Securely modify structure, images, and content values live.
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pb-24">
+        <div id="catalogue-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </main>
+
+    <div id="admin-modal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-black/85 backdrop-blur-xs" onclick="closeAdminModal()"></div>
+        
+        <div class="modal-container bg-[#121216] border border-red-950/60 w-full max-w-md mx-auto rounded-2xl shadow-2xl z-50 overflow-y-auto p-6 m-4">
+            <div class="flex justify-between items-center pb-4 border-b border-gray-800">
+                <p id="modal-title" class="text-xl font-black uppercase tracking-wider text-white">Add New Service</p>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-white text-2xl transition cursor-pointer">&times;</button>
+            </div>
+
+            <form id="service-form" class="mt-4 space-y-4" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="edit-index" value="">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Service Title</label>
+                    <input type="text" id="srv-title" required class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Description</label>
+                    <textarea id="srv-desc" rows="3" required class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Upload Photo</label>
+                    <input type="file" id="srv-img-file" accept="image/*" class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-red-900/40 file:text-xs file:font-bold file:uppercase file:bg-red-950/20 file:text-red-400 hover:file:bg-red-900/30 cursor-pointer">
+                    <p id="upload-note" class="text-[11px] text-gray-500 mt-1">Select an image from your device.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Price / Rate</label>
+                    <input type="text" id="srv-price" placeholder="$99" class="mt-1 block w-full p-3 bg-[#191921] border border-gray-800 rounded-lg text-white focus:outline-hidden focus:border-red-600 transition duration-150">
+                </div>
+                
+                <button type="submit" id="submit-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold uppercase tracking-wider py-3.5 px-4 rounded-lg transition shadow-lg shadow-red-900/10 cursor-pointer mt-2">
+                    Publish Service
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "aksh@$";
+
+        // Initialized Matrix Objects
+        let services = [
+            {
+                title: "Premium Web Design",
+                desc: "Stunning, responsive websites built to convert visitors into loyal customers.",
+                img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80",
+                price: "$1,200"
+            },
+            {
+                title: "Brand Identity & Logo",
+                desc: "Crafting a memorable aesthetic for your company including logos, colors, and fonts.",
+                img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&q=80",
+                price: "$600"
+            }
+        ];
+
+        // Core Render Grid Function
+        function renderCatalogue() {
+            const grid = document.getElementById('catalogue-grid');
+            grid.innerHTML = ''; 
+
+            services.forEach((service, index) => {
+                const cardHtml = `
+                    <div class="bg-[#121216] rounded-xl overflow-hidden shadow-xl transition duration-300 flex flex-col border border-gray-900/70 relative group red-glow">
+                        
+                        <div class="absolute top-3 right-3 flex space-x-2 opacity-100 md:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition duration-200 z-10">
+                            <button onclick="openEditModal(${index})" class="bg-[#121216]/90 backdrop-blur-xs text-red-400 p-2 rounded-full border border-red-950/60 hover:bg-red-950 hover:text-red-300 transition cursor-pointer" title="Edit Service">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                            <button onclick="deleteService(${index})" class="bg-[#121216]/90 backdrop-blur-xs text-red-500 p-2 rounded-full border border-red-950/60 hover:bg-red-600 hover:text-white transition cursor-pointer" title="Delete Service">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="h-48 w-full overflow-hidden bg-black flex items-center justify-center border-b border-gray-900/40">
+                            <img class="h-full w-full object-cover group-hover:scale-105 transition duration-500" src="${service.img}" alt="${service.title}">
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold text-white tracking-wide uppercase">${service.title}</h3>
+                                <p class="mt-2 text-gray-400 text-sm leading-relaxed">${service.desc}</p>
+                            </div>
+                            <div class="mt-6 flex items-center justify-start pt-4 border-t border-gray-900">
+                                <span class="text-red-500 font-black text-xl tracking-tight">${service.price || 'Contact us'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+        }
+
+        // Verification mechanism
+        function verifyAdmin(promptMessage) {
+            const passwordInput = prompt(promptMessage);
+            if (passwordInput === ADMIN_PASSWORD) return true;
+            if (passwordInput !== null) alert("Authentication Failed: Incorrect password.");
+            return false;
+        }
+
+        // Open Modal for adding an item
+        function openAddModal() {
+            if (!verifyAdmin("Enter Admin Password to add a new service:")) return;
+            
+            document.getElementById('modal-title').innerText = "Add New Service";
+            document.getElementById('submit-btn').innerText = "Publish Service";
+            document.getElementById('edit-index').value = ""; 
+            document.getElementById('srv-img-file').required = true;
+            document.getElementById('upload-note').innerText = "Select an image from your device.";
+            
+            toggleModalDisplay(true);
+        }
+
+        // Open Modal for modifying an existing item
+        function openEditModal(index) {
+            if (!verifyAdmin("Enter Admin Password to edit this item:")) return;
+
+            const target = services[index];
+            
+            document.getElementById('modal-title').innerText = "Edit Service Details";
+            document.getElementById('submit-btn').innerText = "Save Updates";
+            document.getElementById('edit-index').value = index; 
+            
+            // Populating form fields
+            document.getElementById('srv-title').value = target.title;
+            document.getElementById('srv-desc').value = target.desc;
+            document.getElementById('srv-price').value = target.price;
+            
+            document.getElementById('srv-img-file').required = false;
+            document.getElementById('upload-note').innerText = "Leave blank to keep current photo.";
+            
+            toggleModalDisplay(true);
+        }
+
+        // Toggle visibility state of configuration model window
+        function toggleModalDisplay(shouldOpen) {
+            const modal = document.getElementById('admin-modal');
+            if (shouldOpen) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function closeAdminModal() {
+            toggleModalDisplay(false);
+            document.getElementById('service-form').reset();
+        }
+
+        // Standardized Form Execution Controller
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('srv-title').value;
+            const desc = document.getElementById('srv-desc').value;
+            const fileInput = document.getElementById('srv-img-file');
+            const price = document.getElementById('srv-price').value;
+            const editIndexValue = document.getElementById('edit-index').value;
+
+            const file = fileInput.files[0];
+
+            function save(finalImgUrl) {
+                if (editIndexValue === "") {
+                    services.unshift({ title, desc, img: finalImgUrl, price });
+                } else {
+                    const idx = parseInt(editIndexValue);
+                    services[idx].title = title;
+                    services[idx].desc = desc;
+                    services[idx].price = price;
+                    if (finalImgUrl) services[idx].img = finalImgUrl; 
+                }
+                renderCatalogue();
+                closeAdminModal();
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => save(reader.result);
+                reader.readAsDataURL(file);
+            } else {
+                save(null);
+            }
+        }
+
+        // Handles secure removal of individual catalogue elements
+        function deleteService(index) {
+            if (verifyAdmin("Enter Admin Password to permanently remove this service:")) {
+                services.splice(index, 1);
+                renderCatalogue();
+            }
+        }
+
+        // Initial runtime initialization
+        document.addEventListener("DOMContentLoaded", renderCatalogue);
+    </script>
+</body>
+</html>
