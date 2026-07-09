@@ -441,7 +441,7 @@
   .t-role { font-size: 0.78rem; color: var(--muted); }
 
   /* ── OUTREACH HUB ── */
-  .contact { padding: 8rem 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+  .contact { padding: 8rem 4rem; display: grid; grid-template-columns: 1fr; gap: 6rem; align-items: start; }
   .contact-info .section-title { margin-bottom: 1.5rem; }
   .contact-desc { font-size: 1rem; color: var(--muted); line-height: 1.75; margin-bottom: 3rem; }
   .contact-details { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -449,27 +449,6 @@
   .cd-icon { width: 40px; height: 40px; background: var(--ink); border-radius: 2px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
   .cd-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.15rem; }
   .cd-value { font-size: 0.95rem; font-weight: 500; }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.2rem; }
-  .form-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; color: var(--muted); }
-  .form-group input, .form-group textarea, .form-group select {
-    background: var(--cream); border: 1.5px solid var(--border); border-radius: 2px;
-    padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-    color: var(--ink); outline: none; transition: border-color 0.2s; width: 100%;
-  }
-  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--blue); }
-  .form-group textarea { resize: vertical; min-height: 140px; }
-  
-  .btn-submit {
-    background: var(--ink); color: #fff; border: none; padding: 1rem;
-    font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase; border-radius: 2px;
-    cursor: pointer; transition: background 0.2s, transform 0.15s;
-    display: flex; align-items: center; justify-content: center; width: 100%;
-  }
-  .btn-submit:hover { background: var(--blue); transform: translateY(-1px); }
-  .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
   /* ── BRAND FOOTER ── */
   footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 5rem 4rem 4rem; }
@@ -591,7 +570,6 @@
     .testimonial-card { padding: 2rem 1.5rem; }
     
     .contact { padding: 5rem 1.2rem; gap: 3.5rem; }
-    .form-row { grid-template-columns: 1fr; gap: 0; }
     .contact-desc { margin-bottom: 2rem; }
     
     footer { padding: 4rem 1.2rem 2.5rem; }
@@ -610,7 +588,6 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- HEADER NAVIGATION -->
 <nav>
   <a href="#" class="nav-logo">
     <img src="Gemini_Generated_Image_69og7b69og7b69og.png" alt="Akshat Digital Intelligence Logo">
@@ -631,7 +608,6 @@
   </ul>
 </nav>
 
-<!-- HERO SCREEN -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
@@ -681,7 +657,6 @@
   </div>
 </section>
 
-<!-- RUNNING GLIDE MARQUEE -->
 <div class="marquee-section">
   <div class="marquee-track">
     <div class="marquee-item"><span class="dot"></span>SEO Dominance</div>
@@ -705,7 +680,6 @@
   </div>
 </div>
 
-<!-- CAPABILITIES MATRIX -->
 <section class="services" id="services">
   <div class="services-header reveal">
     <div>
@@ -755,7 +729,6 @@
   </div>
 </section>
 
-<!-- EXECUTION FRAMEWORK -->
 <section class="process" id="process">
   <div class="reveal">
     <div class="section-label">How We Work</div>
@@ -786,7 +759,6 @@
   </div>
 </section>
 
-<!-- CORE ADVANTAGES -->
 <section class="why" id="why">
   <div class="why-visual reveal">
     <div class="why-box why-box-1">
@@ -842,7 +814,6 @@
   </div>
 </section>
 
-<!-- EVIDENCE & VERDICTS -->
 <section class="testimonials" id="testimonials">
   <div class="testimonials-header reveal">
     <div class="section-label">Client Results</div>
@@ -886,7 +857,6 @@
   </div>
 </section>
 
-<!-- OUTREACH SYSTEM (INTEGRATED GMAIL PIPELINE) -->
 <section class="contact" id="contact">
   <div class="contact-info reveal">
     <div class="section-label">Get In Touch</div>
@@ -924,56 +894,8 @@
       </div>
     </div>
   </div>
-
-  <!-- Functional Submission Form Frame -->
-  <form class="contact-form reveal" id="adiContactForm" action="https://api.web3forms.com/submit" method="POST">
-    
-    <!-- Active Web3Forms Access Token Key Assigned Below -->
-    <input type="hidden" name="access_key" value="80849665-de9f-4047-9591-5f4b26ea8206">
-    <input type="hidden" name="subject" value="New High-Value Lead from ADI Website">
-    <input type="hidden" name="from_name" value="ADI Growth Pipeline">
-    
-    <div class="form-row">
-      <div class="form-group">
-        <label for="first_name">First Name</label>
-        <input type="text" id="first_name" name="First Name" placeholder="Hello" required>
-      </div>
-      <div class="form-group">
-        <label for="last_name">Last Name</label>
-        <input type="text" id="last_name" name="Last Name" placeholder="Ajmer" required>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="email">Business Email</label>
-      <input type="email" id="email" name="Email Address" placeholder="you@company.com" required>
-    </div>
-    <div class="form-group">
-      <label for="company">Company / Brand Name</label>
-      <input type="text" id="company" name="Company Name" placeholder="Your Company">
-    </div>
-    <div class="form-group">
-      <label for="select">Service Interested In</label>
-      <select id="select" name="Requested Service" required>
-        <option value="" disabled selected>Select a service…</option>
-        <option>Performance Marketing</option>
-        <option>SEO & Content Strategy</option>
-        <option>Social Media Marketing</option>
-        <option>Email & Automation</option>
-        <option>Web Design & CRO</option>
-        <option>Brand & Analytics</option>
-        <option>Full Digital Partnership</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="goals">Tell Us About Your Goals</label>
-      <textarea id="goals" name="Client Business Goals" placeholder="What are your biggest digital marketing challenges?" required></textarea>
-    </div>
-    
-    <button class="btn-submit" type="submit">Send Message →</button>
-  </form>
 </section>
 
-<!-- BRAND FOOTER -->
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
@@ -1104,58 +1026,6 @@
       nav.style.padding = '1.5rem 4rem';
     }
   });
-
-  // AJAX Seamless Form Processing Logic (Stays on Site)
-  const form = document.getElementById('adiContactForm');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      e.preventDefault(); // Stop standard full-page reloading sequence
-      
-      const submitButton = this.querySelector('.btn-submit');
-      const originalText = submitButton.textContent;
-      
-      submitButton.textContent = 'Sending Message...';
-      submitButton.disabled = true;
-      submitButton.style.background = '#6b6860';
-
-      const formData = new FormData(form);
-
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json'
-        },
-        body: formData
-      })
-      .then(async (response) => {
-        let json = await response.json();
-        if (response.status == 200) {
-          // Success Response UI Transformation
-          submitButton.textContent = '✓ Sent Successfully!';
-          submitButton.style.background = '#16a34a';
-          form.reset();
-        } else {
-          // Failure Response Fallback Handling
-          console.log(json);
-          submitButton.textContent = '⚠ Submission Failed';
-          submitButton.style.background = '#dc2626';
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        submitButton.textContent = '⚠ Network Error';
-        submitButton.style.background = '#dc2626';
-      })
-      .then(() => {
-        // Re-stabilize interface states automatically
-        setTimeout(() => {
-          submitButton.textContent = originalText;
-          submitButton.disabled = false;
-          submitButton.style.background = '';
-        }, 4000);
-      });
-    });
-  }
 </script>
 </body>
 </html>
